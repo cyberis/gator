@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/cyberis/gator/internal/config"
 )
@@ -9,18 +10,17 @@ import (
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		fmt.Printf("Error reading config: %v\n", err)
-		return
+		log.Fatalf("Error reading config: %v\n", err)
 	}
-	err = config.SetUser("cyberis")
+
+	err = cfg.SetUser("cyberis")
 	if err != nil {
-		fmt.Printf("Error setting user: %v\n", err)
-		return
+		log.Fatalf("Error setting user: %v\n", err)
 	}
+
 	cfg, err = config.Read()
 	if err != nil {
-		fmt.Printf("Error reading config: %v\n", err)
-		return
+		log.Fatalf("Error re-reading config: %v\n", err)
 	}
 	fmt.Printf("%#v\n", cfg)
 }
