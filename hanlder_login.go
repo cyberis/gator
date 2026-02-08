@@ -8,7 +8,7 @@ import (
 
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.args) < 1 {
-		return fmt.Errorf("username argument is required")
+		return fmt.Errorf("usage: %s <username>", cmd.name)
 	}
 	userName := cmd.args[0]
 

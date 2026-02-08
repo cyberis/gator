@@ -11,7 +11,7 @@ import (
 func registerHandler(s *state, cmd command) error {
 	// Validate arguments
 	if len(cmd.args) < 1 {
-		return fmt.Errorf("username argument is required")
+		return fmt.Errorf("usage: %s <username>", cmd.name)
 	}
 	userName := cmd.args[0]
 
