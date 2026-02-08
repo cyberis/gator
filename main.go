@@ -18,6 +18,7 @@ func main() {
 	cmds := newCommands()
 	cmds.register("login", handlerLogin)
 	cmds.register("register", registerHandler)
+	cmds.register("reset", resetHandler)
 
 	// Simulate command input
 	if len(os.Args) < 2 {
