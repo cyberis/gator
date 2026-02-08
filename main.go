@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -15,6 +17,7 @@ func main() {
 	// Initialize commands
 	cmds := newCommands()
 	cmds.register("login", handlerLogin)
+	cmds.register("register", registerHandler)
 
 	// Simulate command input
 	if len(os.Args) < 2 {
