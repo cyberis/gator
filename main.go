@@ -21,6 +21,8 @@ func main() {
 	cmds.register("reset", resetHandler)
 	cmds.register("users", usersHandler)
 	cmds.register("agg", aggregateHandler)
+	cmds.register("addfeed", addFeedHandler)
+	cmds.register("feeds", listFeedsHandler)
 
 	// Simulate command input
 	if len(os.Args) < 2 {
