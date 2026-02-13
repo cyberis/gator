@@ -54,3 +54,35 @@ func followFeedHandler(s *state, cmd command) error {
 	fmt.Printf("Successfully followed feed %s for user %s\n", follow.FeedName, follow.UserName)
 	return nil
 }
+
+func listFollowingHandler(s *state, cmd command) error {
+	// Get current user
+	currentUserName := s.cfg.CurrentUserName
+	if currentUserName == "" {
+		return fmt.Errorf("no current user set, please login first")
+	}
+
+	// Get the user from the database
+	ctx := context.Background()
+	user, err := s.db.GetUser(ctx, currentUserName)
+	if err != nil {
+		return fmt.Errorf("failed to get current user: %v", err)
+	}
+
+	// Get followed feeds from database
+	followedFeeds, err := s.db.GetFeedFollowForUser(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("failed to get followed feeds: %v", err)
+	}
+	if len(followedFeeds) == 0 {
+		fmt.Println("No followed feeds found.")
+		return nil
+	}
+
+	// Print followed feeds
+	fmt.Printf("Feeds followed by %s:\n\n", currentUserName)
+	for _, feed := range followedFeeds {
+		fmt.Printf("* %s (URL: %s)\n", feed.FeedName, feed.FeedUrl)
+	}
+	return nil
+}

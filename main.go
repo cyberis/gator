@@ -24,6 +24,7 @@ func main() {
 	cmds.register("addfeed", addFeedHandler)
 	cmds.register("feeds", listFeedsHandler)
 	cmds.register("follow", followFeedHandler)
+	cmds.register("following", listFollowingHandler)
 
 	// Simulate command input
 	if len(os.Args) < 2 {
