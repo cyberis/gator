@@ -30,6 +30,9 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 		return nil, err
 	}
 
+	// SSet a User-Agent header to avoid being blocked by some servers
+	req.Header.Set("User-Agent", "Gator/1.0")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -41,19 +44,19 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 		return nil, err
 	}
 
-	var feed RSSFeed
-	err = xml.Unmarshal(body, &feed)
+	var rssFeed RSSFeed
+	err = xml.Unmarshal(body, &rssFeed)
 	if err != nil {
 		return nil, err
 	}
 
 	// Unescape HTML entities in titles and descriptions
-	feed.Channel.Title = html.UnescapeString(feed.Channel.Title)
-	feed.Channel.Description = html.UnescapeString(feed.Channel.Description)
-	for i := range feed.Channel.Item {
-		feed.Channel.Item[i].Title = html.UnescapeString(feed.Channel.Item[i].Title)
-		feed.Channel.Item[i].Description = html.UnescapeString(feed.Channel.Item[i].Description)
+	rssFeed.Channel.Title = html.UnescapeString(rssFeed.Channel.Title)
+	rssFeed.Channel.Description = html.UnescapeString(rssFeed.Channel.Description)
+	for i := range rssFeed.Channel.Item {
+		rssFeed.Channel.Item[i].Title = html.UnescapeString(rssFeed.Channel.Item[i].Title)
+		rssFeed.Channel.Item[i].Description = html.UnescapeString(rssFeed.Channel.Item[i].Description)
 	}
 
-	return &feed, nil
+	return &rssFeed, nil
 }

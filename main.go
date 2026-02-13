@@ -26,7 +26,7 @@ func main() {
 
 	// Simulate command input
 	if len(os.Args) < 2 {
-		log.Fatalf("No command provided")
+		log.Fatalf("Usage: cli <command> [args...]")
 	}
 	cmdName := os.Args[1]
 	cmdArgs := os.Args[2:]
