@@ -23,6 +23,7 @@ func main() {
 	cmds.register("agg", aggregateHandler)
 	cmds.register("addfeed", addFeedHandler)
 	cmds.register("feeds", listFeedsHandler)
+	cmds.register("follow", followFeedHandler)
 
 	// Simulate command input
 	if len(os.Args) < 2 {
