@@ -50,7 +50,7 @@ func addFeedHandler(s *state, cmd command) error {
 	fmt.Println()
 	printFeedEntry(&feed, currentUserName)
 	fmt.Println()
-	fmt.Println("=====================================")
+	fmt.Println("=======================================================")
 
 	return nil
 }
@@ -81,7 +81,7 @@ func listFeedsHandler(s *state, cmd command) error {
 		printFeedEntry(&feedData, feed.UserName)
 		println()
 	}
-	fmt.Println("=====================================")
+	fmt.Println("=======================================================")
 	return nil
 }
 
