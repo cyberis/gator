@@ -10,7 +10,7 @@ import (
 	"github.com/cyberis/gator/internal/database"
 )
 
-func addFeedHandler(s *state, cmd command) error {
+func addFeedHandler(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
 		return fmt.Errorf("feed Name is required")
 	}
@@ -20,18 +20,7 @@ func addFeedHandler(s *state, cmd command) error {
 	}
 	feedURL := cmd.args[1]
 
-	// Get current user
-	currentUserName := s.cfg.CurrentUserName
-	if currentUserName == "" {
-		return fmt.Errorf("no current user set, please login first")
-	}
-
-	// Check if user exists
 	ctx := context.Background()
-	user, err := s.db.GetUser(ctx, currentUserName)
-	if err != nil {
-		return fmt.Errorf("failed to get current user: %v", err)
-	}
 
 	// Add feed to database
 	var createFeedParams database.CreateFeedParams
@@ -48,7 +37,7 @@ func addFeedHandler(s *state, cmd command) error {
 	}
 	fmt.Println("Feed added successfully:")
 	fmt.Println()
-	printFeedEntry(&feed, currentUserName)
+	printFeedEntry(&feed, user.Name)
 	fmt.Println()
 	fmt.Println("=======================================================")
 

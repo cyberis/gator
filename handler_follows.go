@@ -9,24 +9,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func followFeedHandler(s *state, cmd command) error {
+func followFeedHandler(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
 		return fmt.Errorf("feed URL is required")
 	}
 	feedURL := cmd.args[0]
 
-	// Get current user
-	currentUserName := s.cfg.CurrentUserName
-	if currentUserName == "" {
-		return fmt.Errorf("no current user set, please login first")
-	}
-
-	// Check if user exists
 	ctx := context.Background()
-	user, err := s.db.GetUser(ctx, currentUserName)
-	if err != nil {
-		return fmt.Errorf("failed to get current user: %v", err)
-	}
 
 	// Get feed by URL
 	feed, err := s.db.GetFeedByURL(ctx, feedURL)
@@ -55,19 +44,9 @@ func followFeedHandler(s *state, cmd command) error {
 	return nil
 }
 
-func listFollowingHandler(s *state, cmd command) error {
-	// Get current user
-	currentUserName := s.cfg.CurrentUserName
-	if currentUserName == "" {
-		return fmt.Errorf("no current user set, please login first")
-	}
+func listFollowingHandler(s *state, cmd command, user database.User) error {
 
-	// Get the user from the database
 	ctx := context.Background()
-	user, err := s.db.GetUser(ctx, currentUserName)
-	if err != nil {
-		return fmt.Errorf("failed to get current user: %v", err)
-	}
 
 	// Get followed feeds from database
 	followedFeeds, err := s.db.GetFeedFollowForUser(ctx, user.ID)
@@ -80,7 +59,7 @@ func listFollowingHandler(s *state, cmd command) error {
 	}
 
 	// Print followed feeds
-	fmt.Printf("Feeds followed by %s:\n\n", currentUserName)
+	fmt.Printf("Feeds followed by %s:\n\n", user.Name)
 	for _, feed := range followedFeeds {
 		fmt.Printf("* %s (URL: %s)\n", feed.FeedName, feed.FeedUrl)
 	}
