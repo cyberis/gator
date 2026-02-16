@@ -12,6 +12,7 @@ const (
 
 type Config struct {
 	DBURL           string `json:"db_url"`
+	RefreshAtMins   int    `json:"refresh_at_mins"`
 	CurrentUserName string `json:"current_user_name"`
 }
 

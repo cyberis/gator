@@ -2,10 +2,16 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/xml"
+	"errors"
+	"fmt"
 	"html"
 	"io"
 	"net/http"
+	"time"
+
+	"github.com/cyberis/gator/internal/database"
 )
 
 type RSSFeed struct {
@@ -59,4 +65,46 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	}
 
 	return &rssFeed, nil
+}
+
+func scrapeFeeds(s *state) {
+	ctx := context.Background()
+
+	// Get the next feed to fetch based on last_fetched_at
+	feed, err := s.db.GetNextFeedToFetch(ctx, int32(s.cfg.RefreshAtMins))
+	if err != nil {
+		// 1. Check if the error is "No Rows Found"
+		if errors.Is(err, sql.ErrNoRows) {
+			// This is often "expected" behavior (e.g., no feeds need refreshing)
+			fmt.Println("No feeds are currently due for fetching")
+			return
+		}
+
+		// 2. Otherwise, it's a real database error (connection, syntax, etc.)
+		fmt.Printf("Failed to fetch next feed: %v\n", err)
+		return
+	}
+
+	rssFeed, err := fetchFeed(ctx, feed.Url)
+	if err != nil {
+		fmt.Printf("Failed to fetch feed %s: %v\n", feed.Name, err)
+		return
+	}
+	fmt.Printf("Fetched feed %s successfully\n", feed.Name)
+
+	// Print feed Titles for demonstration purposes
+	for _, item := range rssFeed.Channel.Item {
+		fmt.Printf("Title: %s\n", item.Title)
+	}
+
+	// Update last_fetched_at in database
+	var markFeedFetchedParams database.MarkFeedFetchedParams
+	markFeedFetchedParams.LastFetchedAt = sql.NullTime{Time: time.Now(), Valid: true}
+	markFeedFetchedParams.ID = feed.ID
+
+	err = s.db.MarkFeedFetched(ctx, markFeedFetchedParams)
+	if err != nil {
+		fmt.Printf("Failed to update last_fetched_at for feed %s: %v\n", feed.Name, err)
+		return
+	}
 }
