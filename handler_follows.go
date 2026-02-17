@@ -11,6 +11,7 @@ import (
 
 func followFeedHandler(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
+		fmt.Printf("Usage: %s <feed-url>\n", cmd.name)
 		return fmt.Errorf("feed URL is required")
 	}
 	feedURL := cmd.args[0]
@@ -68,6 +69,7 @@ func listFollowingHandler(s *state, cmd command, user database.User) error {
 
 func unfollowFeedHandler(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
+		fmt.Printf("Usage: %s <feed-url>\n", cmd.name)
 		return fmt.Errorf("feed URL is required")
 	}
 	feedURL := cmd.args[0]

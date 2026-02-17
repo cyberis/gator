@@ -12,10 +12,12 @@ import (
 
 func addFeedHandler(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
+		fmt.Printf("Usage: %s <feed-name> <feed-url>\n", cmd.name)
 		return fmt.Errorf("feed Name is required")
 	}
 	feedName := cmd.args[0]
 	if len(cmd.args) < 2 {
+		fmt.Printf("Usage: %s <feed-name> <feed-url>\n", cmd.name)
 		return fmt.Errorf("feed URL is required")
 	}
 	feedURL := cmd.args[1]

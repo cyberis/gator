@@ -25,5 +25,6 @@ func aggregateHandler(s *state, cmd command) error {
 		scrapeFeeds(s)
 	}
 
+	// This line will never be reached, but we need it to satisfy the function signature
 	return nil
 }
