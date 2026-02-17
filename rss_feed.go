@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -96,6 +97,7 @@ func scrapeFeeds(s *state) {
 	for _, item := range rssFeed.Channel.Item {
 		fmt.Printf("Title: %s\n", item.Title)
 	}
+	log.Printf("Finished processing feed %s, %v posts found\n", feed.Name, len(rssFeed.Channel.Item))
 
 	// Update last_fetched_at in database
 	var markFeedFetchedParams database.MarkFeedFetchedParams
