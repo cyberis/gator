@@ -93,9 +93,19 @@ func scrapeFeeds(s *state) {
 	}
 	fmt.Printf("Fetched feed %s successfully\n", feed.Name)
 
-	// Print feed Titles for demonstration purposes
+	// Insert Feed Entries into database
 	for _, item := range rssFeed.Channel.Item {
-		fmt.Printf("Title: %s\n", item.Title)
+		post, err := insertPost(s, feed.ID, item.Title, item.Link, item.Description, item.PubDate)
+		if err != nil {
+			// If the error is "post already exists", we can ignore it and continue
+			if errors.Is(err, errors.New("post already exists")) {
+				fmt.Printf("Title: %s - skipped (already exists)\n", item.Title)
+				continue
+			}
+			fmt.Printf("Failed to insert post with URL '%s': %v\n", item.Link, err)
+			continue
+		}
+		fmt.Printf("Title: %s\n", post.Title)
 	}
 	log.Printf("Finished processing feed %s, %v posts found\n", feed.Name, len(rssFeed.Channel.Item))
 
